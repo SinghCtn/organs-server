@@ -1,9 +1,11 @@
 import { ServerConfig } from "./config/serverConfig";
 import { graphqlServerSetup } from "./graphql";
 
+let app;
+
 const server = async () => {
   const PORT = Number(process.env.PORT || 8000);
-  const app = await ServerConfig();
+  app = await ServerConfig();
 
   if (app) {
     graphqlServerSetup(app);
@@ -15,3 +17,5 @@ const server = async () => {
 };
 
 server();
+
+module.exports = app;
