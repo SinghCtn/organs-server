@@ -15,6 +15,6 @@ const server = async () => {
 
   return app;
 };
-// server();
+server();
 
-export default server;
+// export default server;
