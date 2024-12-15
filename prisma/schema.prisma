@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// to run a migration:
+// npx prisma migrate dev
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id          Int      @id @default(autoincrement())  
+  name        String   @db.VarChar(255)
+  dob         DateTime @db.Date
+  gender      Gender    
+  phone       String   @db.VarChar(15)  
+  email       String   @db.VarChar(255) @unique  
+  bloodGroup  BloodType   
+  userType    String   @db.VarChar(10)
+
+  createdAt   DateTime @default(now()) 
+  updatedAt   DateTime @updatedAt
+  
+  
+  allocatedToRecipient  OrganDonations[]  @relation("RecipientRelation")
+  donationOrgans        OrganDonations[]  @relation("DonorRelation")
+  requestedOrgans       OrganRequests[]   @relation("AuthorRelation")
+}
+
+model OrganDonations {
+  id                 Int        @id @default(autoincrement())
+  organ              OrganType   
+  donorId            Int  //forign key to reference Users.
+  availabilityStatus Status     @default(UNAVAILABLE)
+  dateOfDonation     DateTime?
+  dateOfTransplant   DateTime?
+  recipientId        Int? //forign key to reference Users.
+  createdAt          DateTime   @default(now()) 
+  updatedAt          DateTime   @updatedAt
+
+  assignedToRequest OrganRequests? @relation("AssignedOrganRelation")
+  donor     Users?    @relation("DonorRelation", fields: [donorId], references: [id])
+  recipient Users?    @relation("RecipientRelation", fields: [recipientId], references: [id])
+}
+
+model OrganRequests {
+  id            Int           @id @default(autoincrement())
+  organ         OrganType        
+  recipientId   Int 
+  urgencyLevel  UrgencyLevel  @default(MODERATE)
+  organId       Int?          @unique
+
+  createdAt     DateTime      @default(now()) 
+  updatedAt     DateTime      @updatedAt
+
+  recipient Users?  @relation("AuthorRelation", fields: [recipientId], references: [id])
+  assignedOrgan OrganDonations? @relation("AssignedOrganRelation", fields: [organId], references: [id])
+}
+
+model Admins {
+  id        Int         @id @default(autoincrement())
+  name      String      @db.VarChar(255)
+  email     String      @db.VarChar(255) @unique
+  role      AdminRoles  @default(ADMIN)
+  password  String      @db.VarChar(255) 
+
+  createdAt   DateTime  @default(now()) 
+  updatedAt   DateTime  @updatedAt
+  
+}
+
+enum AdminRoles {
+  ADMIN
+  SUPERADMIN
+}
+
+enum BloodType {
+  O_POSITIVE
+  O_NEGATIVE
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Status {
+  UNAVAILABLE
+  AVAILABLE 
+  ALLOCATED
+  TRANSPLANTED
+}
+
+enum UrgencyLevel {
+  EMERGENCY
+  HIGH
+  MODERATE
+  LOW
+}
+
+enum OrganType {
+  HEART  
+  LUNGS 
+  LIVER 
+  KIDNEY 
+  PANCREAS  
+  INTESTINES  
+  CORNEA 
+  SKIN  
+  BONE 
+  TENDON 
+  HEART_VALVE 
+  VEINS 
+  ARTERIES 
+}
