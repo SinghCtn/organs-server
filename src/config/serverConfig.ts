@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { testDBConnection } from "../utils/testDBConnection";
@@ -9,6 +9,10 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors({ origin: "*" }));
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello, world!");
+});
 
 export const ServerConfig = async () => {
   try {
