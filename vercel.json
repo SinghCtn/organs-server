@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/src/index.ts",
+      "src": "server/build/index.js",
       "use": "@vercel/node",
       "config": {
         "prisma": "prisma generate"
@@ -12,7 +12,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "server/src/index.ts"
+      "dest": "/server/build/index.js"
     }
   ]
 }
