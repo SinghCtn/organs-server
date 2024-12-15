@@ -11,6 +11,7 @@ app.use(express.json());
 app.use(cors({ origin: "*" }));
 
 app.get("/", (req: Request, res: Response) => {
+  res.setHeader("Content-Type", "text/plain");
   res.send("Hello, world!");
 });
 
