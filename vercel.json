@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/build/index.js",
+      "src": "server/src/index.ts",
       "use": "@vercel/node",
       "config": {
         "prisma": "prisma generate"
